@@ -4,9 +4,9 @@ $(document).ready(function () {
 });
 
 
-const uri = "/api/AlbumsAPI"; //the api as a global variable
+const uri = "/api/AlbumsAPI"; //the api as a global variable and URL of the api, this one is for localhost
 // alert("API " + uri);
-let allAlbum = null; //holds the data in a global
+let allalbum = null; //holds the data in a global,  the Global variable is not the same as the ID
 //Loads up the <p id="counter"> </p> with a count of the staff, data come from the LoadTable Function where this is called
 function getCount(data) {
     // alert("getcount " + datas);
@@ -26,16 +26,17 @@ function LoadTable() {
         url: uri, //the uri from the global
         cache: false, //don't cache the data in browser reloads, get a fresh copy
         success: function (data) { //if the request succeeds ....
-            const tBody = $("#allStaff"); //for the tbody bind with allstaff <tbody id="allStaff"></tbody>
-            allStaff = data; //pass in all the data to the global allstaff use it in Edit
+            const tBody = $("#allAlbums"); //for the tbody bind with allAlbums <tbody id="allAlbums"></tbody>
+            allalbum = data; //pass in all the data to the global allAlbums use it in Edit
             $(tBody).empty(); //empty out old data
             getCount(data.length); //count for the counter function
             //a foreach through the rows creating table data
-            $.each(data,
+            $.each(data,// this is a for each loop
                 function (key, item) {
                     const tr = $("<tr></tr>")
-                        .append($("<td></td>").text(item.name)) //inserts content in the tags
-                        .append($("<td></td>").text(item.department))
+                        .append($("<td></td>").text(item.artist))
+                        .append($("<td></td>").text(item.track)) //inserts content in the tags
+                        .append($("<td></td>").text(item.genre))
                         .append($("<td></td>")
                             .append($("<button>Edit</button>")
                                 .on("click",
@@ -57,11 +58,12 @@ function LoadTable() {
         }
     });
 }
-//Add an person to the database
+//Add an Album to the database
 function addItem() {
     const item = {
-        name: $("#add-name").val(),
-        department: $("#add-department").val()
+        artist: $("#add-artist").val(),
+        track: $("#add-track").val(),
+        genre: $("#add-genre").val()
     };
     $.ajax({
         type: "POST", //this calls the POST in the API controller
@@ -76,9 +78,10 @@ function addItem() {
         //if it is successful
         success: function (result) {
             LoadTable();
-            $("#add-name").val(""); //clear entry boxes
-            $("#add-department").val("");
-            alert("Staff added successfully");
+            $("#add-artist").val(""); //clear entry boxes
+            $("#add-track").val("");
+            $("#add-genre").val("");
+            alert("album added successfully");
         }
     });
 }
@@ -94,23 +97,25 @@ function deleteItem(id) {
 }
 //click event for edit button to load details into form. Go through each entry held in allStaff and add in the one that matches the id from the click
 function editItem(id) {
-    $.each(allStaff,
+    $.each(allalbum,
         function (key, item) {
             if (item.id === id) {//where the ID == the one on the click
-                $("#edit-name").val(item.name); //add it to the form field
+                $("#edit-artist").val(item.artist); //add it to the form field
                 $("#edit-id").val(item.id);
-                $("#edit-department").val(item.department);;
+                $("#edit-track").val(item.track);
+                $("#edit-genre").val(item.genre);
             }
         });
 }
 $(".my-form").on("submit", //saving the edit to the db
     function () {
         const item = { //pass all the data on the form to a variable called item use later to send to server
-            name: $("#edit-name").val(),
-            department: $("#edit-department").val(),
+            artist: $("#edit-artist").val(),
+            track: $("#edit-track").val(),
+            genre: $("#edit-genre").val(),
             id: $("#edit-id").val()
         };
-        alert("Saving ... " + item.id + " " + item.name + " " + item.department);
+        alert("Saving ... " + item.id + " " + item.artist + " " + item.track + " " + item.genre);
         $.ajax({
             url: uri + "/" + $("#edit-id").val(), //add the row id to the uri
             type: "PUT", //send it to the PUT controller
