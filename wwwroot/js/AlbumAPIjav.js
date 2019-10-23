@@ -34,7 +34,7 @@ function LoadTable() {
             $.each(data,// this is a for each loop
                 function (key, item) {
                     const tr = $("<tr></tr>")
-                        .append($("<td></td>").text(item.artist))
+                        .append($("<td></td>").text(item.artistName)) // the colums name in data base
                         .append($("<td></td>").text(item.track)) //inserts content in the tags
                         .append($("<td></td>").text(item.genre))
                         .append($("<td></td>")
@@ -61,7 +61,7 @@ function LoadTable() {
 //Add an Album to the database
 function addItem() {
     const item = {
-        artist: $("#add-artist").val(),
+        artistName: $("#add-artistName").val(),
         track: $("#add-track").val(),
         genre: $("#add-genre").val()
     };
@@ -78,7 +78,7 @@ function addItem() {
         //if it is successful
         success: function (result) {
             LoadTable();
-            $("#add-artist").val(""); //clear entry boxes
+            $("#add-artistName").val(""); //clear entry boxes
             $("#add-track").val("");
             $("#add-genre").val("");
             alert("album added successfully");
@@ -100,7 +100,7 @@ function editItem(id) {
     $.each(allalbum,
         function (key, item) {
             if (item.id === id) {//where the ID == the one on the click
-                $("#edit-artist").val(item.artist); //add it to the form field
+                $("#edit-artistName").val(item.artistName); //add it to the form field
                 $("#edit-id").val(item.id);
                 $("#edit-track").val(item.track);
                 $("#edit-genre").val(item.genre);
@@ -110,12 +110,12 @@ function editItem(id) {
 $(".my-form").on("submit", //saving the edit to the db
     function () {
         const item = { //pass all the data on the form to a variable called item use later to send to server
-            artist: $("#edit-artist").val(),
+            artistName: $("#edit-artistName").val(),
             track: $("#edit-track").val(),
             genre: $("#edit-genre").val(),
             id: $("#edit-id").val()
         };
-        alert("Saving ... " + item.id + " " + item.artist + " " + item.track + " " + item.genre);
+        alert("Saving ... " + item.id + " " + item.artistName + " " + item.track + " " + item.genre);
         $.ajax({
             url: uri + "/" + $("#edit-id").val(), //add the row id to the uri
             type: "PUT", //send it to the PUT controller
