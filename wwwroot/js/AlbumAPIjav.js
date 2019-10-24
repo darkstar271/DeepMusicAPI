@@ -34,14 +34,14 @@ function LoadTable() {
             $.each(data,// this is a for each loop
                 function (key, item) {
                     const tr = $("<tr></tr>")
-                        .append($("<td></td>").text(item.artistName)) // the colums name in data base
-                        .append($("<td></td>").text(item.track)) //inserts content in the tags
-                        .append($("<td></td>").text(item.genre))
+                        .append($("<td></td>").text(item.artistName)) // the colums name in data base, changed from "artistName" to "ArtistName"
+                        .append($("<td></td>").text(item.track)) //inserts content in the tags,    changed from "track" to "Track"
+                        .append($("<td></td>").text(item.genre))//  changed from "genre" to "Genre"
                         .append($("<td></td>")
                             .append($("<button>Edit</button>")
                                 .on("click",
                                     function () {
-                                        editItem(item.id);
+                                        editItem(item.Album_ID);// Album_ID, changed from "item.id" to "Album_ID"
                                     }) //in the empty cell append in an edititem button
                             )
                         )
@@ -49,7 +49,7 @@ function LoadTable() {
                             $("<td></td>").append(
                                 $("<button>Delete</button>").on("click",
                                     function () {
-                                        deleteItem(item.id);
+                                        deleteItem(item.Album_ID);// Album_ID, changed from "item.id" to "Album_ID"
                                     })//in an empty cell add in a deleteitem button
                             )
                         );
@@ -61,7 +61,7 @@ function LoadTable() {
 //Add an Album to the database
 function addItem() {
     const item = {
-        artistName: $("#add-artistName").val(),
+        artistName: $("#add-ArtistName").val(),
         track: $("#add-track").val(),
         genre: $("#add-genre").val()
     };
@@ -78,7 +78,7 @@ function addItem() {
         //if it is successful
         success: function (result) {
             LoadTable();
-            $("#add-artistName").val(""); //clear entry boxes
+            $("#add-ArtistName").val(""); //clear entry boxes
             $("#add-track").val("");
             $("#add-genre").val("");
             alert("album added successfully");
@@ -96,10 +96,11 @@ function deleteItem(id) {
     });
 }
 //click event for edit button to load details into form. Go through each entry held in allStaff and add in the one that matches the id from the click
-function editItem(id) {
+// e.g , here "#edit-artistName" matches AlbumAPI.cshtml    id = "edit-artistName"
+function editItem(ID) {
     $.each(allalbum,
         function (key, item) {
-            if (item.id === id) {//where the ID == the one on the click
+            if (item.Album_ID === ID) {//where the ID == the one on the click
                 $("#edit-artistName").val(item.artistName); //add it to the form field
                 $("#edit-id").val(item.id);
                 $("#edit-track").val(item.track);
@@ -110,18 +111,18 @@ function editItem(id) {
 $(".my-form").on("submit", //saving the edit to the db
     function () {
         const item = { //pass all the data on the form to a variable called item use later to send to server
-            artistName: $("#edit-artistName").val(),
+            artistName: $("#edit-artistName").val(),// each one of these must match up with the database column names, i.e artistName: and column "artistName" on the table
             track: $("#edit-track").val(),
             genre: $("#edit-genre").val(),
-            id: $("#edit-id").val()
+            album_ID: $("#edit-id").val()
         };
-        alert("Saving ... " + item.id + " " + item.artistName + " " + item.track + " " + item.genre);
+        alert("Saving ... " + item.album_ID + " " + item.artistName + " " + item.track + " " + item.genre);
         $.ajax({
             url: uri + "/" + $("#edit-id").val(), //add the row id to the uri
             type: "PUT", //send it to the PUT controller
             accepts: "application/json",
             contentType: "application/json",
-            data: JSON.stringify(item), //take the item data and pass it to the serever data is moved to server
+            data: JSON.stringify(item), //take the item data and pass it to the server data is moved to server
             success: function (result) {
                 LoadTable(); //load the table afresh
             }
