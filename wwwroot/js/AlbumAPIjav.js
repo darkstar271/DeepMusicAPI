@@ -41,7 +41,7 @@ function LoadTable() {
                             .append($("<button>Edit</button>")
                                 .on("click",
                                     function () {
-                                        editItem(item.Album_ID);// Album_ID, changed from "item.id" to "Album_ID"
+                                        editItem(item.album_ID);// Album_ID, changed from "item.id" to "Album_ID"
                                     }) //in the empty cell append in an edititem button
                             )
                         )
@@ -49,7 +49,7 @@ function LoadTable() {
                             $("<td></td>").append(
                                 $("<button>Delete</button>").on("click",
                                     function () {
-                                        deleteItem(item.Album_ID);// Album_ID, changed from "item.id" to "Album_ID"
+                                        deleteItem(item.album_ID);// Album_ID, changed from "item.id" to "Album_ID"
                                     })//in an empty cell add in a deleteitem button
                             )
                         );
@@ -87,6 +87,7 @@ function addItem() {
 }
 //Delete a person from the database
 function deleteItem(id) {
+    alert("delete " + id);// this just sends to screen information on what value "id"
     $.ajax({
         url: uri + "/" + id, //add the ID to the end of the URI
         type: "DELETE", //this calls the DELETE in the API controller
@@ -97,21 +98,27 @@ function deleteItem(id) {
 }
 //click event for edit button to load details into form. Go through each entry held in allStaff and add in the one that matches the id from the click
 // e.g , here "#edit-artistName" matches AlbumAPI.cshtml    id = "edit-artistName"
-function editItem(ID) {
+function editItem(id) {
+    alert("edit " + id);// this just sends to screen information on what value "id"
     $.each(allalbum,
         function (key, item) {
-            if (item.Album_ID === ID) {//where the ID == the one on the click
+            if (item.album_ID === id) {//where the ID == the one on the click
                 $("#edit-artistName").val(item.artistName); //add it to the form field
-                $("#edit-id").val(item.id);
+                $("#edit-id").val(item.album_ID);// item.album_ID must be the same as item.album_ID === id
+                //  alert("item.id " + item.album_ID);// this just sends to screen information on what value "id"
                 $("#edit-track").val(item.track);
                 $("#edit-genre").val(item.genre);
             }
         });
 }
-$(".my-form").on("submit", //saving the edit to the db
+
+$(".my-form").on("submit", //Save());//saving the edit to the db
     function () {
+        alert(`submit ${$("#edit-artistName").val()}`); // this just sends to screen information on what value "id"
         const item = { //pass all the data on the form to a variable called item use later to send to server
-            artistName: $("#edit-artistName").val(),// each one of these must match up with the database column names, i.e artistName: and column "artistName" on the table
+            artistName:
+                $("#edit-artistName")
+                    .val(), // each one of these must match up with the database column names, i.e artistName: and column "artistName" on the table
             track: $("#edit-track").val(),
             genre: $("#edit-genre").val(),
             album_ID: $("#edit-id").val()
